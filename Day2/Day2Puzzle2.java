@@ -19,12 +19,12 @@ public class Day2Puzzle2 {
 
         System.out.println(inputArrayList.size());
 
-        int offset = 0;
         int indexOfOffset = 0;
 
         for (int i = 0; i < inputArrayList.size() - 1; i++) {
             for (int j = i + 1; j < inputArrayList.size() - 1; j++) {
 
+                int offset = 0;
                 int length = inputArrayList.get(i).length();
                 for (int x = 0; x < inputArrayList.get(i).length(); x++) {
 
@@ -34,7 +34,6 @@ public class Day2Puzzle2 {
                     else {
                         offset++;
                         indexOfOffset = x;
-                        System.out.println("boof");
                     }
                 }
 
