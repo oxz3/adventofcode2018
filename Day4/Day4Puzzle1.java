@@ -1,6 +1,5 @@
 import java.lang.String;
 import java.util.*;
-import java.io.*;
 
 public class Day4Puzzle1 {
     public static void main (String args[]) throws Exception {
@@ -21,17 +20,18 @@ public class Day4Puzzle1 {
         inputArrayList.remove(0);
         System.out.println(inputArrayList);
 
-        boolean[][] sleepLog = new boolean[inputArrayList.size()][60];
-        for (boolean[] row : sleepLog)
-            Arrays.fill(row, false);
+        int[][] sleepLog = new int[inputArrayList.size()][60];
+        for (int[] row : sleepLog)
+            Arrays.fill(row, 0);
 
         //HashMap<String, String> whenWho = new HashMap<String, String>();
         //Arrays.fill(whenWho, null);
         ArrayList<HashMap<String, String>> whenWho = new ArrayList();
-        whenWho.ensureCapacity(60);
 
-        for (int x = 0; x < inputArrayList.size(); x++) {
-            StringBuffer sbLog = new StringBuffer(inputArrayList.get(x));
+        int logIndex = 0;
+        int sleepIndex = 0;
+        for (String entry : inputArrayList) {
+            StringBuffer sbLog = new StringBuffer(entry);
 
             // Parse out the date, time, and guard
             int openBracket = sbLog.indexOf("[");
@@ -49,15 +49,48 @@ public class Day4Puzzle1 {
 
                 HashMap hm = new HashMap();
                 hm.put("Guard", guardNum);
-                whenWho.add(x,hm);
+                if (parsedTime.contains("23:")) {
+                    String nextDate = parsedDate.substring(0, 4) + (Integer.parseInt(parsedDate.substring(4)) + 1);
+                    hm.put("Date", nextDate);
+                }
+                else {
+                    hm.put("Date", parsedDate);
+                }
+                whenWho.add(logIndex,hm);
                 System.out.println("Guard num: " + guardNum);
+
+                logIndex++;
             }
 
-            /*HashMap hm = new HashMap();
-            hm.put("Date", parsedDate);
-            whenWho.add(x, hm);
-*/
+            else if (parsedAction.contains("falls")) {
+                StringBuffer sbTime = new StringBuffer(parsedTime);
+                int colon = sbTime.indexOf(":");
+                String minutes = sbTime.substring(colon + 1);
+                sleepIndex = Integer.parseInt(minutes);
+            }
 
+            else if (parsedAction.contains("wakes")) {
+                StringBuffer sbTime = new StringBuffer(parsedTime);
+                int colon = sbTime.indexOf(":");
+                String minutes = sbTime.substring(colon + 1);
+                int wakeIndex = Integer.parseInt(minutes);
+
+                for (int x = sleepIndex; x < wakeIndex; x++) {
+                    sleepLog[logIndex][x] = 1;
+                }
+            }
+
+            else {
+                System.out.println("Shouldn't hit");
+            }
+
+        }
+
+        System.out.println(whenWho);
+
+        for (int i = 0; i < whenWho.size(); i++) {
+            HashMap<String, String> hm = new HashMap();
+            whenWho.
         }
     }
 }
