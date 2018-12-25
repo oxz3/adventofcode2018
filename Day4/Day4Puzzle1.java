@@ -76,7 +76,7 @@ public class Day4Puzzle1 {
                 int wakeIndex = Integer.parseInt(minutes);
 
                 for (int x = sleepIndex; x < wakeIndex; x++) {
-                    sleepLog[logIndex][x] = 1;
+                    sleepLog[logIndex-1][x] = 1;
                 }
             }
 
@@ -88,9 +88,29 @@ public class Day4Puzzle1 {
 
         System.out.println(whenWho);
 
+        HashMap<String, Integer> sleepTotals = new HashMap<String, Integer>();
+
         for (int i = 0; i < whenWho.size(); i++) {
-            HashMap<String, String> hm = new HashMap();
-            whenWho.
+            HashMap<String, String> hm = new HashMap<>();
+            hm = whenWho.get(i);
+
+            int timeAsleep = 0;
+            for (int j = 0; j < 60; j++) {
+                timeAsleep = timeAsleep + sleepLog[i][j];
+            }
+
+            System.out.println(hm.get("Guard") + " slept " + timeAsleep);
+            if (sleepTotals.containsValue(hm.get("Guard"))) {
+                int newSleep = sleepTotals.get(hm.get("Guard"));
+                newSleep = newSleep + timeAsleep;
+                sleepTotals.replace(hm.get("Guard"), newSleep);
+            }
+            else {
+                sleepTotals.putIfAbsent(hm.get("Guard"), timeAsleep);
+            }
+
         }
+
+        System.out.println(sleepTotals);
     }
 }
