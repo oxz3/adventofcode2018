@@ -24,8 +24,6 @@ public class Day4Puzzle1 {
         for (int[] row : sleepLog)
             Arrays.fill(row, 0);
 
-        //HashMap<String, String> whenWho = new HashMap<String, String>();
-        //Arrays.fill(whenWho, null);
         ArrayList<HashMap<String, String>> whenWho = new ArrayList();
 
         int logIndex = 0;
@@ -45,7 +43,10 @@ public class Day4Puzzle1 {
             if (parsedAction.contains("Guard")) {
                 StringBuffer sbAction = new StringBuffer(parsedAction);
                 int poundSign = sbAction.indexOf("#");
-                String guardNum = sbAction.substring(poundSign + 1, poundSign + 3);
+                StringBuffer sbExtra = new StringBuffer(sbAction.substring(poundSign + 1));
+                int space = sbExtra.indexOf(" ");
+                String guardNum = sbExtra.substring(0, space);
+
 
                 HashMap hm = new HashMap();
                 hm.put("Guard", guardNum);
@@ -100,7 +101,7 @@ public class Day4Puzzle1 {
             }
 
             System.out.println(hm.get("Guard") + " slept " + timeAsleep);
-            if (sleepTotals.containsValue(hm.get("Guard"))) {
+            if (sleepTotals.containsKey(hm.get("Guard"))) {
                 int newSleep = sleepTotals.get(hm.get("Guard"));
                 newSleep = newSleep + timeAsleep;
                 sleepTotals.replace(hm.get("Guard"), newSleep);
@@ -112,5 +113,44 @@ public class Day4Puzzle1 {
         }
 
         System.out.println(sleepTotals);
+
+        String sleepyGuard = "";
+        int maxAsleep = 0;
+        for (Map.Entry<String, Integer> asleep : sleepTotals.entrySet()) {
+            if (asleep.getValue() > maxAsleep) {
+                maxAsleep = asleep.getValue();
+                sleepyGuard = asleep.getKey();
+            }
+        }
+
+        System.out.println("Sleepy " + sleepyGuard + " slept for " + maxAsleep);
+
+        ArrayList<Integer> sleepyDays = new ArrayList<>();
+        int y = 0;
+        while (y < whenWho.size()) {
+            if (whenWho.get(y).get("Guard").equals(sleepyGuard))
+                sleepyDays.add(y);
+            y++;
+        }
+
+        int maxSleep = 0;
+        int snooziestMinute = 0;
+        for (int j = 0; j < 60; j++) {
+
+            int subTotalSleep = 0;
+            for (int i = 0; i < sleepyDays.size(); i++) {
+                subTotalSleep = subTotalSleep + sleepLog[sleepyDays.get(i)][j];
+            }
+
+            if (maxSleep < subTotalSleep) {
+                maxSleep = subTotalSleep;
+                snooziestMinute = j;
+            }
+
+        }
+
+        System.out.println("Max sleep" + maxSleep + " most snooze: " + snooziestMinute);
+
+        System.out.println("Checksum: " + snooziestMinute * Integer.parseInt(sleepyGuard));
     }
 }
