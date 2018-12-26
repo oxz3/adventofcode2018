@@ -6,36 +6,26 @@ import java.io.*;
 
 public class Day5Puzzle1 {
     public static void main (String args[]) throws Exception {
-        Scanner keyboard = new Scanner (System.in);
-        String input;
+        //Scanner keyboard = new Scanner (System.in);
+        File file = new File ("input.txt");
+        Scanner fileInput = new Scanner (file);
+        String input = "";
 
-        URL url = new URL("https://adventofcode.com/2018/day/5/input");
-        HttpsURLConnection conn = (HttpsURLConnection)url.openConnection();
-        InputStream is = conn.getInputStream();
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader in = new BufferedReader(isr);
-
-        String inputLine;
-
-        while ((inputLine = in.readLine()) != null)
-            System.out.println(inputLine);
-
-        in.close();
-
-        do {
-            input = keyboard.nextLine();
+        while (fileInput.hasNextLine()) {
+            input = fileInput.nextLine();
+            System.out.println(input);
 
             int x = 0;
             while (x < input.length() - 1) {
                 if (polarityCheck(input, x)) {
                     String newString = destroy(input, x);
                     input = newString;
-                    System.out.println(input);
                     x = -1;
                 }
                 x++;
             }
-        } while (!input.equals("0"));
+        }
+        System.out.println(input.length());
     }
 
     public static boolean polarityCheck (String stringInput, int index) {
