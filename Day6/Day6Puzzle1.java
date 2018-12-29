@@ -8,6 +8,7 @@ public class Day6Puzzle1 {
         Scanner fileInput = new Scanner (file);
         String input = "";
         ArrayList<String> inputAL = new ArrayList<>();
+        ArrayList<Coordinates> coordsAL = new ArrayList<>();
 
         while (fileInput.hasNextLine()) {
             input = fileInput.nextLine();
@@ -28,6 +29,7 @@ public class Day6Puzzle1 {
             xyCoords[1] = xyCoords[1].trim();
             xCoords.add(Integer.parseInt(xyCoords[0]));
             yCoords.add(Integer.parseInt(xyCoords[1]));
+            coordsAL.add(new Coordinates(Integer.parseInt(xyCoords[0]), Integer.parseInt(xyCoords[1])));
         }
 
 
@@ -59,5 +61,31 @@ public class Day6Puzzle1 {
             grid[xCoords.get(i)][yCoords.get(i)] = i;
         }
 
+
+
+
+    }
+
+
+}
+
+
+class Coordinates {
+
+    int xCoord;
+    int yCoord;
+
+    // Constructor
+    public Coordinates (int xCoord, int yCoord) {
+        this.xCoord = xCoord;
+        this.yCoord = yCoord;
+    }
+
+    // getDistance method
+    public int getDistance (Coordinates c1, Coordinates c2) {
+        int xDistance = Math.abs(c1.xCoord - c2.xCoord);
+        int yDistance = Math.abs(c1.yCoord - c2.yCoord);
+        int distance = xDistance + yDistance;
+        return distance;
     }
 }
