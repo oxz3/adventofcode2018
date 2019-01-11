@@ -100,10 +100,37 @@ public class Day6Puzzle1 {
             }
         }
 
-
+        // re-fill grid with original values, not sure why I had to correct this
         for (int i = 0; i < xCoords.size(); i++)
             grid[xCoords.get(i)][yCoords.get(i)] = i;
 
+
+        // find and remove perimeter values from consideration
+        HashSet<Integer> coordSet = new HashSet<>();
+        for (int s = 0; s < biggestY + 1; s++) {
+
+            for (int r = 0; r < biggestX + 1; r++) {
+                int value = 0;
+                if (r == 0 || r == biggestX) {
+                    value = grid[r][s];
+                    if (value >= 0)
+                        coordSet.add(value);
+                }
+                if (value == -1)
+                    continue;
+
+            }
+
+            if (s == 0 || s == biggestY) {
+                for (int r = 0; r < biggestX + 1; r++) {
+                    int value = 0;
+                    value = grid[r][s];
+                    if (value >= 0)
+                        coordSet.add(value);
+                }
+            }
+        }
+        System.out.println(coordSet);
 
         int highestCount = -1;
         int highestValue = -1;
@@ -117,6 +144,8 @@ public class Day6Puzzle1 {
             else if (coordsAL.get(l).equals(new Coordinates(biggestX, yCoords.get(xCoords.indexOf(biggestX)))))
                 continue;
             else if (coordsAL.get(l).equals(new Coordinates(xCoords.get(yCoords.indexOf(biggestY)), biggestY)))
+                continue;
+            else if (coordSet.contains(l))
                 continue;
             else {
 
