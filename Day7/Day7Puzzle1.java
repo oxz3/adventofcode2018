@@ -27,9 +27,15 @@ public class Day7Puzzle1 {
         System.out.println(nextAR);
 
         char startingPoint = preAR.get(0);
-        StringBuilder sequence = new StringBuilder(String.valueOf(startingPoint));
+        ArrayList<Character> processed = new ArrayList<>();
+        processed.add(startingPoint);  // InputSequence
+
+
         ArrayList<Character> availableRoutes = new ArrayList<>();
-        for (int x = 0; x < preAR.size(); x++) {
+        availableRoutes = processNext(processed, preAR, nextAR);
+       // availableRoutes = processNext(availableRoutes, preAR, nextAR);
+
+/*        for (int x = 0; x < preAR.size(); x++) {
 
             if (preAR.get(x).equals(startingPoint)) {
                 availableRoutes.add(nextAR.get(x));
@@ -37,19 +43,52 @@ public class Day7Puzzle1 {
         }
 
         Collections.sort(availableRoutes);
-        System.out.println(availableRoutes);
+*/        System.out.println(availableRoutes);
 
-        ArrayList<Character> nextAvailableRoute = new ArrayList<>();
-        for (char x : availableRoutes) {
-            nextAvailableRoute.add(x);
-            for (int y = 0; y < preAR.size(); y++) {
-                if (preAR.get(y) == x) {
-                    sequence.append(x);
-                    nextAvailableRoute.add(nextAR.get(y));
+
+
+
+    }
+
+    static ArrayList<Character> processNext(ArrayList<Character> in, ArrayList<Character> pr,
+                                            ArrayList<Character> ne) {
+        ArrayList<Character> inputSequence = in;
+        ArrayList<Character> pre = pr;
+        ArrayList<Character> next = ne;
+
+        ArrayList<Character> outputSequence = inputSequence;
+        ArrayList<Character> queue = new ArrayList<>();
+
+        for (char i : inputSequence) {
+            if (inputSequence.size() < 3) {
+                for (int k = 0; k < pre.size(); k++) {
+                    if (i == pre.get(k)) {
+                        queue.add(next.get(k));
+                    }
                 }
             }
+
+            for (int j = 0; j < next.size(); j++) {
+                if (i == next.get(j)) {
+                    for (int k = 0; k < pre.size(); k++) {
+                        if (i == pre.get(k)) {
+                            queue.add(next.get(k));
+                        }
+                    }
+                }
+            }
+
         }
 
-        System.out.println(nextAvailableRoute);
+        Collections.sort(queue);
+        System.out.println("Queue: " + queue);
+        // After sorting, check to see if you can process it
+        for (char m : queue) {
+            for (char n : pre) {
+                //
+            }
+            outputSequence.add(queue.get(0));
+        }
+        return outputSequence;
     }
 }
