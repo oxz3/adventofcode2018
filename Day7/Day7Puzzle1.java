@@ -27,26 +27,77 @@ public class Day7Puzzle1 {
         System.out.println(nextAR);
 
         char startingPoint = preAR.get(0);
-        ArrayList<Character> processed = new ArrayList<>();
-        processed.add(startingPoint);  // InputSequence
+        ArrayList<Character> toProcess = new ArrayList<>();
+        toProcess.add(startingPoint);  // InputSequence
+        ArrayList<Character> sequence = new ArrayList<>();
+
+        // Identify first step/starting point, place in list
+        // prereq check, top down
+        // process first valid step
+        // find next steps, place in a list
+        // sort list
+        // prereq check, top down
+        // process first valid step, and remove from list
+        // find next steps from finished step, place in list
+        // sort list
 
 
-        ArrayList<Character> availableRoutes = new ArrayList<>();
-        availableRoutes = processNext(processed, preAR, nextAR);
-       // availableRoutes = processNext(availableRoutes, preAR, nextAR);
+        char passedReq = checkPreReq(toProcess, sequence, preAR, nextAR);
+        sequence.add(passedReq);
+        //toProcess.remove(passedReq);
 
-/*        for (int x = 0; x < preAR.size(); x++) {
-
-            if (preAR.get(x).equals(startingPoint)) {
-                availableRoutes.add(nextAR.get(x));
+        for (int j = 0; j < preAR.size(); j++) {
+            if (passedReq == preAR.get(j)) {
+                toProcess.add(nextAR.get(j));
             }
         }
 
-        Collections.sort(availableRoutes);
-*/        System.out.println(availableRoutes);
+        Collections.sort(toProcess);
 
+        passedReq = checkPreReq(toProcess, sequence, preAR, nextAR);
+        sequence.add(passedReq);
 
+        System.out.println(sequence);
 
+    }
+
+    static char checkPreReq(ArrayList<Character> in, ArrayList<Character> seq, ArrayList<Character> pr,
+                                            ArrayList<Character> ne) {
+        ArrayList<Character> input = in;
+        ArrayList<Character> sequence = seq;
+        ArrayList<Character> pre = pr;
+        ArrayList<Character> next = ne;
+
+        char outputChar = '0';
+        char inputChar = '0';
+        int count = 0;
+        int confirm = 0;
+
+        if (!sequence.isEmpty()) {
+
+            for (char ic : input) {
+                inputChar = ic;
+                for (int i = 0; i < ne.size(); i++) {
+                    if (next.get(i) == inputChar) {
+                        count++;
+                        if (sequence.contains(pre.get(i))) {
+                            confirm++;
+                        }
+                        else {
+                            continue;
+                        }
+                    }
+                }
+            }
+            if (count == confirm)
+                outputChar = inputChar;
+        }
+
+        else {
+            outputChar = input.get(0);
+        }
+
+        return outputChar;
 
     }
 
