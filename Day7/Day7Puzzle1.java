@@ -42,27 +42,30 @@ public class Day7Puzzle1 {
         // sort list
 
 
-        char passedReq = checkPreReq(toProcess, sequence, preAR, nextAR);
-        sequence.add(passedReq);
-        //toProcess.remove(passedReq);
+        char passedReq;
 
-        for (int j = 0; j < preAR.size(); j++) {
-            if (passedReq == preAR.get(j)) {
-                toProcess.add(nextAR.get(j));
+        while (!toProcess.isEmpty()) {
+
+            passedReq = checkPreReq(toProcess, sequence, preAR, nextAR);
+            sequence.add(passedReq);
+            //System.out.println("passedReq: " + passedReq);
+            toProcess.remove((Character) passedReq);
+
+            for (int j = 0; j < preAR.size(); j++) {
+                if (passedReq == preAR.get(j)) {
+                    toProcess.add(nextAR.get(j));
+                }
             }
+
+            Collections.sort(toProcess);
+            System.out.println("toProcess: " + toProcess);
+            System.out.println("sequence: " + sequence);
         }
-
-        Collections.sort(toProcess);
-
-        passedReq = checkPreReq(toProcess, sequence, preAR, nextAR);
-        sequence.add(passedReq);
-
-        System.out.println(sequence);
 
     }
 
-    static char checkPreReq(ArrayList<Character> in, ArrayList<Character> seq, ArrayList<Character> pr,
-                                            ArrayList<Character> ne) {
+    static char checkPreReq(ArrayList<Character> in, ArrayList<Character> seq,
+                                            ArrayList<Character> pr, ArrayList<Character> ne) {
         ArrayList<Character> input = in;
         ArrayList<Character> sequence = seq;
         ArrayList<Character> pre = pr;
@@ -75,22 +78,34 @@ public class Day7Puzzle1 {
 
         if (!sequence.isEmpty()) {
 
+            ArrayList<Character> matches = new ArrayList<>();
+            // Go thru input list
             for (char ic : input) {
                 inputChar = ic;
-                for (int i = 0; i < ne.size(); i++) {
+                // Match against the next steps
+                for (int i = 0; i < next.size(); i++) {
+                    // If you get a match, add to count
+                    // That means toProcess matches next
                     if (next.get(i) == inputChar) {
                         count++;
+                        matches.add(inputChar);
+                        // If its in sequence, add to confirm
+                        // That means, the prereq of this toProcess has been processed
                         if (sequence.contains(pre.get(i))) {
                             confirm++;
+                            outputChar = inputChar;
                         }
                         else {
                             continue;
                         }
                     }
                 }
+                if (confirm == count)
+                    outputChar = inputChar;
             }
-            if (count == confirm)
-                outputChar = inputChar;
+
+
+            outputChar = matches.get(0);
         }
 
         else {
@@ -101,45 +116,4 @@ public class Day7Puzzle1 {
 
     }
 
-    static ArrayList<Character> processNext(ArrayList<Character> in, ArrayList<Character> pr,
-                                            ArrayList<Character> ne) {
-        ArrayList<Character> inputSequence = in;
-        ArrayList<Character> pre = pr;
-        ArrayList<Character> next = ne;
-
-        ArrayList<Character> outputSequence = inputSequence;
-        ArrayList<Character> queue = new ArrayList<>();
-
-        for (char i : inputSequence) {
-            if (inputSequence.size() < 3) {
-                for (int k = 0; k < pre.size(); k++) {
-                    if (i == pre.get(k)) {
-                        queue.add(next.get(k));
-                    }
-                }
-            }
-
-            for (int j = 0; j < next.size(); j++) {
-                if (i == next.get(j)) {
-                    for (int k = 0; k < pre.size(); k++) {
-                        if (i == pre.get(k)) {
-                            queue.add(next.get(k));
-                        }
-                    }
-                }
-            }
-
-        }
-
-        Collections.sort(queue);
-        System.out.println("Queue: " + queue);
-        // After sorting, check to see if you can process it
-        for (char m : queue) {
-            for (char n : pre) {
-                //
-            }
-            outputSequence.add(queue.get(0));
-        }
-        return outputSequence;
-    }
 }
