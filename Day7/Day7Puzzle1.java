@@ -5,7 +5,7 @@ import java.lang.String;
 
 public class Day7Puzzle1 {
     public static void main (String[] args) throws Exception {
-        String filename = "sample.txt";
+        String filename = "input.txt";
         File file = new File(filename);
         Scanner fileInput = new Scanner(file);
 
@@ -81,6 +81,7 @@ public class Day7Puzzle1 {
         if (!sequence.isEmpty()) {
 
             ArrayList<Character> matches = new ArrayList<>();
+            ArrayList<Character> misMatches = new ArrayList<>();
             // Go thru input list
             for (char ic : input) {
                 inputChar = ic;
@@ -94,23 +95,21 @@ public class Day7Puzzle1 {
                         // If its in sequence, add to confirm
                         // That means, the prereq of this toProcess has been processed
                         if (sequence.contains(pre.get(i))) {
-                            for (int j = 0; j < matches.size(); j++) {
-                                // need to handle multiple prereqs
-                            }
                             confirm++;
-                            outputChar = inputChar;
                         }
                         else {
-                            continue;
+                            misMatches.add(inputChar);
                         }
                     }
                 }
-                if (confirm == count)
-                    outputChar = inputChar;
             }
-
-
-            outputChar = matches.get(0);
+            if (confirm == count && confirm != 0)
+                outputChar = matches.get(0);
+            else {
+                matches.removeAll(misMatches);
+                System.out.println("Matches: " + matches);
+                outputChar = matches.get(0);
+            }
         }
 
         else {
