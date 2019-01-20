@@ -53,7 +53,9 @@ public class Day7Puzzle1 {
 
             for (int j = 0; j < preAR.size(); j++) {
                 if (passedReq == preAR.get(j)) {
-                    toProcess.add(nextAR.get(j));
+                    if (!toProcess.contains(nextAR.get(j))) {
+                        toProcess.add(nextAR.get(j));
+                    }
                 }
             }
 
@@ -92,6 +94,9 @@ public class Day7Puzzle1 {
                         // If its in sequence, add to confirm
                         // That means, the prereq of this toProcess has been processed
                         if (sequence.contains(pre.get(i))) {
+                            for (int j = 0; j < matches.size(); j++) {
+                                // need to handle multiple prereqs
+                            }
                             confirm++;
                             outputChar = inputChar;
                         }
