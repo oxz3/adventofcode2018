@@ -85,6 +85,8 @@ public class Day7Puzzle1 {
             // Go thru input list
             for (char ic : input) {
                 inputChar = ic;
+                confirm = 0;
+                count = 0;
                 // Match against the next steps
                 for (int i = 0; i < next.size(); i++) {
                     // If you get a match, add to count
@@ -102,14 +104,14 @@ public class Day7Puzzle1 {
                         }
                     }
                 }
+                if (confirm == count && confirm != 0)
+                    outputChar = matches.get(0);
+                else {
+                    matches.removeAll(misMatches);
+                    System.out.println("Matches: " + matches);
+                }
             }
-            if (confirm == count && confirm != 0)
-                outputChar = matches.get(0);
-            else {
-                matches.removeAll(misMatches);
-                System.out.println("Matches: " + matches);
-                outputChar = matches.get(0);
-            }
+            outputChar = matches.get(0);
         }
 
         else {
