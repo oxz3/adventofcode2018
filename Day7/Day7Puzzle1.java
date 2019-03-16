@@ -26,9 +26,8 @@ public class Day7Puzzle1 {
         System.out.println(preAR);
         System.out.println(nextAR);
 
-        char startingPoint = preAR.get(0);
         ArrayList<Character> toProcess = new ArrayList<>();
-        toProcess.add(startingPoint);  // InputSequence
+        toProcess.add(findStart(preAR, nextAR));  // InputSequence
         ArrayList<Character> sequence = new ArrayList<>();
 
         // Identify first step/starting point, place in list
@@ -51,19 +50,41 @@ public class Day7Puzzle1 {
             //System.out.println("passedReq: " + passedReq);
             toProcess.remove((Character) passedReq);
 
+
+
+            boolean found = false;
+            // Need to add logic that only adds to this queue if ALL prereqs are satisfied
             for (int j = 0; j < preAR.size(); j++) {
                 if (passedReq == preAR.get(j)) {
                     if (!toProcess.contains(nextAR.get(j))) {
-                        toProcess.add(nextAR.get(j));
+                        for (int k = 0; k < preAR.size(); k++) {
+                            if (nextAR.get(k) == nextAR.get(j) && k != j) {
+                                if (sequence.contains(preAR.get(k)))
+                                    toProcess.add(nextAR.get(j));
+                                found = true;
+                            }
+                        }
+                        if (found == false)
+                            toProcess.add(nextAR.get(j));
                     }
                 }
             }
 
             Collections.sort(toProcess);
-            System.out.println("toProcess: " + toProcess);
             System.out.println("sequence: " + sequence);
+            System.out.println("toProcess: " + toProcess);
         }
 
+    }
+
+    static char findStart(ArrayList<Character> pr, ArrayList<Character> ne) {
+        ArrayList<Character> candidates = new ArrayList<>();
+        for (int i = 0; i < pr.size(); i++) {
+            if (ne.indexOf(pr.get(i)) == -1)
+                candidates.add(pr.get(i));
+        }
+        Collections.sort(candidates);
+        return candidates.get(0);
     }
 
     static char checkPreReq(ArrayList<Character> in, ArrayList<Character> seq,
@@ -90,20 +111,22 @@ public class Day7Puzzle1 {
                 // Match against the next steps
                 for (int i = 0; i < next.size(); i++) {
                     // If you get a match, add to count
-                    // That means toProcess matches next
+                    // That means toProcess matches something from next
                     if (next.get(i) == inputChar) {
                         count++;
                         matches.add(inputChar);
                         // If its in sequence, add to confirm
-                        // That means, the prereq of this toProcess has been processed
+                        // That means, the prereq of this toProcess has been processed already
                         if (sequence.contains(pre.get(i))) {
                             confirm++;
+                            continue;
                         }
                         else {
                             misMatches.add(inputChar);
                         }
                     }
                 }
+                // If confirm & count matchup and confirm isn't zero, then the first match is it
                 if (confirm == count && confirm != 0)
                     outputChar = matches.get(0);
                 else {
@@ -111,6 +134,8 @@ public class Day7Puzzle1 {
                     System.out.println("Matches: " + matches);
                 }
             }
+
+            if (outputChar == '0' && !matches.isEmpty())
             outputChar = matches.get(0);
         }
 
