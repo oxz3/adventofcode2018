@@ -52,9 +52,10 @@ public class Day7Puzzle1 {
 
 
 
-            boolean found = false;
+            //boolean found = false;
             // Need to add logic that only adds to this queue if ALL prereqs are satisfied
-            for (int j = 0; j < preAR.size(); j++) {
+            toProcess.addAll(satisfiedPreReq(passedReq, toProcess, preAR, nextAR));
+ /*           for (int j = 0; j < preAR.size(); j++) {
                 if (passedReq == preAR.get(j)) {
                     if (!toProcess.contains(nextAR.get(j))) {
                         for (int k = 0; k < preAR.size(); k++) {
@@ -69,12 +70,26 @@ public class Day7Puzzle1 {
                     }
                 }
             }
-
+*/
             Collections.sort(toProcess);
             System.out.println("sequence: " + sequence);
             System.out.println("toProcess: " + toProcess);
         }
 
+    }
+
+    static ArrayList<Character> satisfiedPreReq(char seq, ArrayList<Character> tp, ArrayList<Character> pr,
+                                                ArrayList<Character> ne) {
+        ArrayList<Character> potentials = new ArrayList<>();
+        for (int i = 0; i < pr.size(); i++) {
+            if (seq == pr.get(i)) {
+                if (!tp.contains(ne.get(i)))
+                    potentials.add(ne.get(i));
+            }
+        }
+        Collections.sort(potentials);
+
+        return potentials;
     }
 
     static char findStart(ArrayList<Character> pr, ArrayList<Character> ne) {
