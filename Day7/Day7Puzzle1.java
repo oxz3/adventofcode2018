@@ -27,7 +27,11 @@ public class Day7Puzzle1 {
         System.out.println(nextAR);
 
         ArrayList<Character> toProcess = new ArrayList<>();
-        toProcess.add(findStart(preAR, nextAR));  // InputSequence
+        //toProcess.add(findStart(preAR, nextAR));  // InputSequence
+        ArrayList<Character> startingList = new ArrayList<>();
+        startingList = findStart(preAR, nextAR);
+        Collections.sort(startingList);
+        toProcess.addAll(startingList);
         ArrayList<Character> sequence = new ArrayList<>();
 
         // Identify first step/starting point, place in list
@@ -45,7 +49,7 @@ public class Day7Puzzle1 {
 
         while (!toProcess.isEmpty()) {
 
-            passedReq = checkPreReq(toProcess, sequence, preAR, nextAR);
+            passedReq = checkPreReq(toProcess, sequence, preAR, nextAR, startingList);
             sequence.add(passedReq);
             //System.out.println("passedReq: " + passedReq);
             toProcess.remove((Character) passedReq);
@@ -92,18 +96,19 @@ public class Day7Puzzle1 {
         return potentials;
     }
 
-    static char findStart(ArrayList<Character> pr, ArrayList<Character> ne) {
+    static ArrayList<Character> findStart(ArrayList<Character> pr, ArrayList<Character> ne) {
         ArrayList<Character> candidates = new ArrayList<>();
         for (int i = 0; i < pr.size(); i++) {
             if (ne.indexOf(pr.get(i)) == -1)
-                candidates.add(pr.get(i));
+                if (!candidates.contains(pr.get(i)))
+                    candidates.add(pr.get(i));
         }
         Collections.sort(candidates);
-        return candidates.get(0);
+        return candidates;
     }
 
     static char checkPreReq(ArrayList<Character> in, ArrayList<Character> seq,
-                                            ArrayList<Character> pr, ArrayList<Character> ne) {
+                            ArrayList<Character> pr, ArrayList<Character> ne, ArrayList<Character> cands) {
         ArrayList<Character> input = in;
         ArrayList<Character> sequence = seq;
         ArrayList<Character> pre = pr;
@@ -118,40 +123,49 @@ public class Day7Puzzle1 {
 
             ArrayList<Character> matches = new ArrayList<>();
             ArrayList<Character> misMatches = new ArrayList<>();
+
             // Go thru input list
             for (char ic : input) {
                 inputChar = ic;
                 confirm = 0;
                 count = 0;
-                // Match against the next steps
-                for (int i = 0; i < next.size(); i++) {
-                    // If you get a match, add to count
-                    // That means toProcess matches something from next
-                    if (next.get(i) == inputChar) {
-                        count++;
-                        matches.add(inputChar);
-                        // If its in sequence, add to confirm
-                        // That means, the prereq of this toProcess has been processed already
-                        if (sequence.contains(pre.get(i))) {
-                            confirm++;
-                            continue;
-                        }
-                        else {
-                            misMatches.add(inputChar);
+
+                if (cands.contains(inputChar)) {
+                    outputChar = inputChar;
+                    break;
+                }
+                else {
+                    // Match against the next steps
+                    for (int i = 0; i < next.size(); i++) {
+                        // If you get a match, add to count
+                        // That means toProcess matches something from next
+                        if (next.get(i) == inputChar) {
+                            count++;
+                            matches.add(inputChar);
+                            // If its in sequence, add to confirm
+                            // That means, the prereq of this toProcess has been processed already
+                            if (sequence.contains(pre.get(i))) {
+                                confirm++;
+                                continue;
+                            } else {
+                                misMatches.add(inputChar);
+                            }
                         }
                     }
+                    // If confirm & count matchup and confirm isn't zero, then the first match is it
+                    if (confirm == count && confirm != 0)
+                        outputChar = matches.get(0);
+                    else {
+                        matches.removeAll(misMatches);
+                        System.out.println("Matches: " + matches);
+                    }
                 }
-                // If confirm & count matchup and confirm isn't zero, then the first match is it
-                if (confirm == count && confirm != 0)
-                    outputChar = matches.get(0);
-                else {
-                    matches.removeAll(misMatches);
-                    System.out.println("Matches: " + matches);
-                }
-            }
 
-            if (outputChar == '0' && !matches.isEmpty())
-            outputChar = matches.get(0);
+                //if (outputChar == '0' && !matches.isEmpty())
+                //    outputChar = matches.get(0);
+            }
+            if (!matches.isEmpty())
+                outputChar = matches.get(0);
         }
 
         else {
